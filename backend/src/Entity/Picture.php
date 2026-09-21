@@ -67,7 +67,7 @@ class Picture
             return null;
         }
 
-        return 'http://localhost:8000/uploads/front_cover/' . $this->frontCover;
+        return $this->frontCover;
     }
 
     public function setFrontCover(string $frontCover): static
@@ -100,7 +100,7 @@ class Picture
             return null;
         }
 
-        return 'http://localhost:8000/uploads/back_cover/' . $this->backCover;
+        return $this->backCover;
     }
 
     public function setBackCover(string $backCover): static

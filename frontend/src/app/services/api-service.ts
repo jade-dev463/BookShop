@@ -11,25 +11,22 @@ import { Listing, ListingForm } from '../interfaces/listing';
 import { Discussion } from '../interfaces/discussion';
 import { SendMessage } from '../interfaces/send-message';
 import { Message } from '../interfaces/message';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ApiService {
   private http = inject(HttpClient);
-  // private url = 'http://127.0.0.1:8000/api';
-  private url = 'https://backend-xx28.onrender.com/api';
+  private readonly url = environment.apiUrl
 
   getBooks() {
     return this.http.get<Book[]>(`${this.url}/books`);
   }
-
-  // api.service.ts
+  
   searchBookByIsbn(isbn: string): Observable<GoogleBook | null> {
-    console.log('🔵 SERVICE - searchBookByIsbn appelé avec:', isbn);
 
     if (!isbn) {
-      console.log('🔵 SERVICE - ISBN vide, retour null');
       return of(null);
     }
 

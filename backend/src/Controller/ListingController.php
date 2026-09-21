@@ -204,7 +204,14 @@ final class ListingController extends AbstractController
     #[Route('/edit/listing/{id}', name: 'api_edit_Listing', methods: ['PUT'])]
     public function editListing(Request $request, Listing $currentListing, EntityManagerInterface $em, ValidatorInterface $validator)
     {
-        $dto = $this->serializer->deserialize($request->getContent(), ListingFormEdit::class, 'json');
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->json(['message' => 'Non authentifié'], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $data = $request->request->get('data');
+
+        $dto = $this->serializer->deserialize($data, ListingFormEdit::class, 'json');
 
         $errors = $validator->validate($dto);
         if (count($errors) > 0) {
@@ -227,9 +234,33 @@ final class ListingController extends AbstractController
             $currentListing->setLanguage($dto->language);
         }
 
+        $frontCoverFile = $request->files->get('frontCover');
+        $backCoverFile = $request->files->get('backCover');
+
+        if ($frontCoverFile || $backCoverFile) {
+            $picture = $currentListing->getPicture();
+
+            // Si la Picture n'existe pas encore → on la crée
+            if (!$picture) {
+                $picture = new Picture();
+                $picture->setListing($currentListing);
+                $currentListing->setPicture($picture);
+                $em->persist($picture);
+            }
+
+            if ($frontCoverFile) {
+                $picture->setFrontCoverFile($frontCoverFile);
+            }
+            if ($backCoverFile) {
+                $picture->setBackCoverFile($backCoverFile);
+            }
+
+            $picture->setUpdatedAt(new \DateTimeImmutable());
+        }
+
         $em->flush();
 
-        $jsonListing = $this->serializer->serialize($dto, 'json', ['groups' => 'getListing']);
+        $jsonListing = $this->serializer->serialize($currentListing, 'json', ['groups' => 'getListing']);
         return new JsonResponse($jsonListing, 200, [], true);
     }
 

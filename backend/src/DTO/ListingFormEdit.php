@@ -14,12 +14,13 @@ class ListingFormEdit
     public ?string $isbn = null;
 
     #[Assert\NotBlank]
+    #[Assert\Positive]
     public ?float $price = null;
-
-    #[Assert\NotBlank]
-    public ?string $book_condition = null;
 
     #[Assert\NotBlank]
     public ?string $language = null;
 
+    public ?string $book_condition = null;
+    
+    public ?int $category = null;
 }

@@ -190,7 +190,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             return null;
         }
 
-        return 'http://localhost:8000/uploads/users/' . $this->profil_picture;
+        return $this->profil_picture;
     }
 
     public function setProfilPicture(string $profil_picture): static
