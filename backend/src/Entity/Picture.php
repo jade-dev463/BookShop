@@ -67,7 +67,7 @@ class Picture
             return null;
         }
 
-        return $this->frontCover;
+        return '/uploads/front_cover/' . $this->frontCover;
     }
 
     public function setFrontCover(string $frontCover): static
@@ -100,7 +100,7 @@ class Picture
             return null;
         }
 
-        return $this->backCover;
+        return '/uploads/back_cover/' . $this->backCover;
     }
 
     public function setBackCover(string $backCover): static
