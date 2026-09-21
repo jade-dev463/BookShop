@@ -6,7 +6,7 @@ import { Author } from '../interfaces/author';
 import { User } from '../interfaces/user';
 import { GoogleBook } from '../interfaces/google-book';
 import { Category, NewCategory } from '../interfaces/category';
-import { catchError, Observable, of, tap, throwError } from 'rxjs';
+import { catchError, map, Observable, of, tap, throwError } from 'rxjs';
 import { Listing, ListingForm } from '../interfaces/listing';
 import { Discussion } from '../interfaces/discussion';
 import { SendMessage } from '../interfaces/send-message';
@@ -52,12 +52,33 @@ export class ApiService {
     })
   }
 
-  getListings() {
-    return this.http.get<Listing[]>(`${this.url}/booklistings`);
+  getListings(): Observable<Listing[]> {
+    return this.http.get<Listing[]>(`${this.url}/booklistings`).pipe(
+      map(listings => listings.map(l => this.normalizeListing(l)))
+    );
   }
 
-  getListingById(id: number) {
-    return this.http.get<Listing>(`${this.url}/listing/${id}`);
+  getListingById(id: number): Observable<Listing> {
+    return this.http.get<Listing>(`${this.url}/listing/${id}`).pipe(
+      map(listing => this.normalizeListing(listing))
+    );
+  }
+
+  private normalizeListing(listing: Listing): Listing {
+    if (!listing.picture) return listing;
+    return {
+      ...listing,
+      picture: {
+        frontCover: this.buildImageUrl(listing.picture.frontCover),
+        backCover:  this.buildImageUrl(listing.picture.backCover),
+      },
+    };
+  }
+
+  private buildImageUrl(path?: string | null): string | null {
+    if (!path) return null;
+    if (path.startsWith('http')) return path;
+    return `${environment.uploadsUrl}${path.startsWith('/') ? '' : '/'}${path}`;
   }
 
   postListing(formData: FormData): Observable<Listing> {

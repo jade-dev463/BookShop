@@ -15,7 +15,7 @@ export interface Listing {
     publication_date: Date
     book: Book
     user: User
-    picture: Picture
+    picture: Picture | null
     category: Category
 }
 
