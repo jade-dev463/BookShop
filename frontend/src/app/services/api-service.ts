@@ -25,25 +25,18 @@ export class ApiService {
   }
   
   searchBookByIsbn(isbn: string): Observable<GoogleBook | null> {
+  if (!isbn) return of(null);
 
-    if (!isbn) {
-      return of(null);
-    }
+  const params = new HttpParams().set('isbn', isbn);
 
-    const url = 'http://localhost:8000/api/books/search';
-    const params = new HttpParams().set('isbn', isbn);
-    const fullUrl = `${url}?${params.toString()}`;
-
-    console.log('🔵 SERVICE - URL complète:', fullUrl);
-
-    return this.http.get<GoogleBook>(url, { params }).pipe(
-      tap(() => console.log('🔵 SERVICE - Requête envoyée')),
-      catchError((error) => {
-        console.error('🔵 SERVICE - Erreur:', error.status, error.message);
+  return this.http
+    .get<GoogleBook>(`${this.url}/books/search`, { params })
+    .pipe(
+      catchError(() => {
         return of(null);
       }),
     );
-  }
+}
 
   getAuthor() {
     return this.http.get<Author[]>(`${this.url}/authors`);
