@@ -21,6 +21,6 @@ export class App {
   }
 
   isLoginPage(): boolean {
-    return this.router.url === '/login' || this.router.url === '/login-admin';
+    return this.router.url === '/login' || this.router.url === '/admin' || this.router.url === '/register' || this.router.url === '/login-admin';
   }
 }

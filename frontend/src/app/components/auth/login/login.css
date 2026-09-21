@@ -1,0 +1,87 @@
+.login-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.container {
+  margin: 10px!important;
+  width: clamp(400px, 50%, 500px);
+}
+
+.card{
+  padding: 38px 36px 30px;
+}
+
+.card-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: transparent;
+  border: none;
+}
+
+.card-header h1 {
+  font-family: 'Noto Serif', serif;
+  .book {
+    color: #2c5aa0;
+  }
+
+  .shop {
+    color: #5998df;
+  }
+}
+
+.card-foot {
+  text-align: center;
+}
+
+input[type='email'],
+input[type='password'] {
+  width: 100%;
+  padding: 12px 30px;
+  border: 1px solid #E5E7EB;
+  border-radius: 999px;
+  font-size: 14.5px;
+  font-family: inherit;
+  color: #1F2937;
+  background: #fff;
+}
+input:focus {
+  outline: none;
+  border-color: #2F86E8;
+  box-shadow: 0 0 0 3px #EAF3FD;
+}
+
+.form-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 7px;
+}
+
+a {
+  color: #2F86E8;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+.foot {
+  text-align: center;
+  font-size: 14px;
+  padding-top: 22px;
+  border-top: 1px solid var(--line-soft);
+}
+
+
+input.bad {
+  border: 1px solid red !important;
+}
+
+.error {
+  color: red;
+  font-size: 0.85rem;
+  margin-top: 4px;
+}

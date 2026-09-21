@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { NewUser } from '../../../interfaces/user';
+import { NewUser, User } from '../../../interfaces/user';
 import { Auth } from '../../../services/auth';
 import { Router, RouterLink } from '@angular/router';
 import { email, form, minLength, required, submit, FormField } from '@angular/forms/signals';
@@ -21,7 +21,7 @@ export class Registration {
 
   alert = signal<Alert | null>(null);
   messageAlert = signal<string | null>(null);
-
+  submitted = signal(false);
   registerModel = signal<NewUser>({
     lastname: '',
     firstname: '',
@@ -56,20 +56,29 @@ export class Registration {
 
   onSubmit(event: Event) {
     event.preventDefault();
-    submit(this.registerForm, async ()=>{
-      const credentials = this.registerModel()
+    this.submitted.set(true);
+
+    if (this.registerForm().invalid()) return;
+    submit(this.registerForm, async () => {
+      const credentials = this.registerModel();
       this.authService.register(credentials).subscribe({
-      next: () => {
-        this.showAlert("Connexion Réussie", 'success', 3000)
-        setTimeout(() => {
-          this.router.navigate(['/catalogue']);
-        }, 4000);
-      },
-      error(err) {
-        alert('Error -' + err.error);
-        console.error('❌ Erreur inscription:', err);
-      },
+        next: () => {
+          this.showAlert('Connexion Réussie', 'success', 3000);
+          setTimeout(() => {
+            this.router.navigate(['/catalogue']);
+          }, 4000);
+        },
+        error: (err) => {
+          console.log('❌ erreur reçue:', err);
+          console.log('status:', err.status);
+          console.log('body:', err.error);
+
+          if (err.status === 409) {
+            this.showAlert(err.error.message, 'danger', 4000);
+            return;
+          }
+        },
+      });
     });
-    })
   }
 }

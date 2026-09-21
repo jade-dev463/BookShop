@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\DTO\RegisterDto;
 use App\Entity\User;
+use App\Repository\UserRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
@@ -37,12 +38,21 @@ final class AuthController extends AbstractController
         EntityManagerInterface $em,
         ValidatorInterface $validator,
         UserPasswordHasherInterface $userPasswordHasher,
+        UserRepository $userRepository
     ): JsonResponse {
         $dto = $this->serializer->deserialize($request->getContent(), RegisterDto::class, 'json');
 
         $errors = $validator->validate($dto);
         if (count($errors) > 0) {
             return $this->json($errors, Response::HTTP_BAD_REQUEST);
+        }
+
+        if ($userRepository->findOneBy(['email' => $dto->email])) {
+            return $this->json(['message' => 'Cet email est déjà utilisé'], 409);
+        }
+
+        if ($userRepository->findOneBy(['pseudo' => $dto->pseudo])) {
+            return $this->json(['message' => 'Ce pseudo n\'est pas disponible'], 409);
         }
 
         $user = new User();
@@ -145,14 +155,14 @@ final class AuthController extends AbstractController
         ]);
 
         $response->headers->setCookie(
-    Cookie::create('JWT_TOKEN')
-        ->withValue('')
-        ->withHttpOnly(true)
-        ->withSecure(true)
-        ->withSameSite('none')
-        ->withPath('/')
-        ->withExpires(new \DateTimeImmutable('@0'))
-);
+            Cookie::create('JWT_TOKEN')
+                ->withValue('')
+                ->withHttpOnly(true)
+                ->withSecure(true)
+                ->withSameSite('none')
+                ->withPath('/')
+                ->withExpires(new \DateTimeImmutable('@0'))
+        );
 
         return $response;
     }

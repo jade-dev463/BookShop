@@ -18,6 +18,7 @@ export class Login {
 
   alert = signal<Alert | null>(null);
   messageAlert = signal<string | null>(null);
+  submitted = signal(false);
 
   showAlert(message: string, type: Alert, timeout = 3000) {
     this.messageAlert.set(message);
@@ -45,11 +46,9 @@ export class Login {
   });
 
   onSubmit(event: Event) {
-    this.closeAlert(); // reset alert
     event.preventDefault();
-
-    if (!this.loginForm().valid()) {
-      alert('Veuillez remplir tous les champs correctement');
+    this.submitted.set(true)
+    if (this.loginForm().invalid()) {
       return;
     }
 
@@ -63,26 +62,9 @@ export class Login {
           }, 4000);
         },
         error: (err) => {
-          this.handleBackendError(err);
+          this.showAlert('Email ou mot de passe incorrect', 'danger');
         },
       });
     });
-  }
-
-  handleBackendError(err: any) {
-    const code = err.error?.code || err.error?.message;
-
-    switch (code) {
-      case 'EMAIL_NOT_EXISTS':
-        this.showAlert('Email introuvable', 'danger');
-        break;
-
-      case 'PASSWORD_INVALID':
-        this.showAlert('Mot de passe incorrect', 'danger');
-        break;
-
-      default:
-        this.showAlert('Une erreur est survenue', 'danger');
-    }
   }
 }

@@ -1,156 +1,123 @@
-<div class="pb-5 pb-lg-0 min-vh-100 bg-background">
-  <div class="container-small mx-auto px-3 px-lg-4 py-4 py-lg-5">
-    <!-- Register Card -->
-    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
-      <div class="card-body p-4 p-lg-5">
-        <!-- Icon / Logo -->
-        <div class="text-center mb-4">
-          <div
-            class="avatar-lg bg-primary-light rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3">
-            <i class="bi bi-person-plus fs-1 text-primary"></i>
+<section class="register-form">
+  <div class="container">
+    <!-- Login Card -->
+    <div class="card">
+      <div class="card-header">
+        <h1><span class="book">Book</span><span class="shop">Shop</span></h1>
+        <p>Créez votre compte gratuitement</p>
+      </div>
+
+      <!-- Alert Messages -->
+      @if (messageAlert()) {
+      <div class="alert alert-{{alert()}} d-flex align-items-center mb-4" role="alert">
+        <i class="bi bi-{{alert() === 'success' ? 'check-circle' : 'exclamation-triangle'}} me-2 fs-5"></i>
+        <div class="flex-grow-1">
+          {{messageAlert()}}
+        </div>
+      </div>
+      }
+
+      <!-- Login Form -->
+      <form (submit)="onSubmit($event)">
+        <div class="text-end mb-2">
+          <span class="text-muted small"><i class="bi bi-asterisk text-danger small"></i> champ requis</span>
+        </div>
+        @let lastname = registerForm.lastname();
+        <div class="mb-3">
+          <label for="lastname" class="form-label">
+            Nom <span class="text-danger">*</span>
+          </label>
+
+          <input type="text" [class.bad]="submitted() && lastname.invalid()" [formField]="registerForm.lastname" id="lastname">
+
+          @if (lastname.invalid() && lastname.touched()) {
+          <div class="error">
+            @for (error of lastname.errors(); track error.kind) {
+            <span>{{ error.message }}</span>
+            }
           </div>
-          <h3 class="fw-semibold text-primary mb-1">BookShare</h3>
-          <p class="text-muted small">Créez votre compte gratuitement</p>
+          }
         </div>
 
+        @let firstname = registerForm.firstname();
+        <div class="mb-3">
+          <label for="firstname" class="form-label">
+            Prénom <span class="text-danger">*</span>
+          </label>
 
+          <input type="text" [class.bad]="submitted() && firstname.invalid()" [formField]="registerForm.firstname" id="firstname">
 
-        <!-- Register Form -->
-        <form (submit)="onSubmit($event)">
-          @if (messageAlert()) {
-        <div class="alert alert-{{alert()}} d-flex align-items-center mb-4" role="alert">
-          <i class="bi bi-{{alert() === 'success' ? 'check-circle' : 'exclamation-triangle'}} me-2 fs-5"></i>
-          <div class="flex-grow-1">
-            {{messageAlert()}}
+          @if (firstname.invalid() && firstname.touched()) {
+          <div class="error">
+            @for (error of firstname.errors(); track error.kind) {
+            <span>{{ error.message }}</span>
+            }
           </div>
+          }
         </div>
-        }
-          <div class="text-end mb-2">
-            <span class="text-muted small"><i class="bi bi-asterisk text-danger small"></i> champ requis</span>
-          </div>
 
-          <div class="mb-3">
-            <label for="lastname" class="form-label fw-medium small text-secondary">
-              Nom <span class="text-danger">*</span>
-            </label>
-            <div class="input-group">
-              <span class="input-group-text bg-light border-end-0">
-                <i class="bi bi-person text-muted"></i>
-              </span>
-              <input type="text" [formField]="registerForm.lastname" class="form-control border-start-0 ps-0"
-                id="lastname">
-            </div>
-            @if (registerForm.lastname().invalid() && registerForm.lastname().touched()) {
-            <div class="error">
-              @for (error of registerForm.lastname().errors(); track error.kind) {
-              <span>{{ error.message }}</span>
-              }
-            </div>
+        @let pseudo = registerForm.pseudo();
+        <div class="mb-4">
+          <label for="pseudo" class="form-label">
+            Pseudo <span class="text-danger">*</span>
+          </label>
+
+          <input type="text" [class.bad]="submitted() && pseudo.invalid()" [formField]="registerForm.pseudo" id="pseudo">
+
+          @if (pseudo.invalid() && pseudo.touched()) {
+          <div class="error">
+            @for (error of pseudo.errors(); track error.kind) {
+            <span>{{ error.message }}</span>
             }
           </div>
+          }
+        </div>
 
-          <div class="mb-3">
-            <label for="firstname" class="form-label fw-medium small text-secondary">
-              Prénom <span class="text-danger">*</span>
-            </label>
-            <div class="input-group">
-              <span class="input-group-text bg-light border-end-0">
-                <i class="bi bi-person-badge text-muted"></i>
-              </span>
-              <input type="text" [formField]="registerForm.firstname" class="form-control border-start-0 ps-0"
-                id="firstname">
-            </div>
-            @if (registerForm.firstname().invalid() && registerForm.firstname().touched()) {
-            <div class="error">
-              @for (error of registerForm.firstname().errors(); track error.kind) {
-              <span>{{ error.message }}</span>
-              }
-            </div>
+        @let email = registerForm.email();
+        <div class="mb-3">
+          <label for="email" class="form-label">
+            Adresse mail <span class="text-danger">*</span>
+          </label>
+
+          <input type="email" [class.bad]="submitted() && email.invalid()" [formField]="registerForm.email" id="email" placeholder="nom@exemple.fr">
+
+          @if (email.invalid() && email.touched()) {
+          <div class="error">
+            @for (error of email.errors(); track error.kind) {
+            <span>{{ error.message }}</span>
             }
           </div>
+          }
+        </div>
 
-          <div class="mb-4">
-            <label for="pseudo" class="form-label fw-medium small text-secondary">
-              Pseudo <span class="text-danger">*</span>
-            </label>
-            <div class="input-group">
-              <span class="input-group-text bg-light border-end-0">
-                <i class="bi bi-lock text-muted"></i>
-              </span>
-              <input type="pseudo" [formField]="registerForm.pseudo" class="form-control border-start-0 ps-0"
-                id="pseudo">
-            </div>
-            @if (registerForm.pseudo().invalid() && registerForm.pseudo().touched()) {
-            <div class="error">
-              @for (error of registerForm.pseudo().errors(); track error.kind) {
-              <span>{{ error.message }}</span>
-              }
-            </div>
+        @let passwd = registerForm.password();
+        <div class="mb-4">
+          <label for="password" class="form-label">
+            Mot de passe <span class="text-danger">*</span>
+          </label>
+          <input type="password" [class.bad]="submitted() && passwd.invalid()" [formField]="registerForm.password" id="password" placeholder="8 caractères minimum">
+          @if (passwd.invalid() && passwd.touched()) {
+          <div class="error">
+            @for (error of passwd.errors(); track error.kind) {
+            <span>{{ error.message }}</span>
             }
           </div>
+          }
+        </div>
 
-          <div class="mb-3">
-            <label for="email" class="form-label fw-medium small text-secondary">
-              Adresse mail <span class="text-danger">*</span>
-            </label>
-            <div class="input-group">
-              <span class="input-group-text bg-light border-end-0">
-                <i class="bi bi-envelope text-muted"></i>
-              </span>
-              <input type="email" [formField]="registerForm.email" class="form-control border-start-0 ps-0" id="email">
-            </div>
-            @if (registerForm.email().invalid() && registerForm.email().touched()) {
-            <div class="error">
-              @for (error of registerForm.email().errors(); track error.kind) {
-              <span>{{ error.message }}</span>
-              }
-            </div>
-            }
-          </div>
-
-          <div class="mb-4">
-            <label for="password" class="form-label fw-medium small text-secondary">
-              Mot de passe <span class="text-danger">*</span>
-            </label>
-            <div class="input-group">
-              <span class="input-group-text bg-light border-end-0">
-                <i class="bi bi-lock text-muted"></i>
-              </span>
-              <input type="password" [formField]="registerForm.password" class="form-control border-start-0 ps-0"
-                id="password">
-            </div>
-            @if (registerForm.password().invalid() && registerForm.password().touched()) {
-            <div class="error">
-              @for (error of registerForm.password().errors(); track error.kind) {
-              <span>{{ error.message }}</span>
-              }
-            </div>
-            }
-          </div>
-
-          <button type="submit" [disabled]="registerForm().invalid()"
-            class="btn btn-primary w-100 py-2 fw-semibold mb-3">
-            <i class="bi bi-person-plus me-2"></i>
-            S'inscrire
-          </button>
-
-          <div class="text-center">
-            <p class="small text-muted mb-0">
-              Vous avez déjà un compte ?
-              <a routerLink="/login" class="text-primary text-decoration-none fw-medium">
-                Se connecter
-                <i class="bi bi-arrow-right ms-1 small"></i>
-              </a>
-            </p>
-          </div>
-        </form>
+        <button type="submit" [disabled]="registerForm().invalid()" class="btn btn-primary w-100 py-2 fw-semibold mb-3">
+          <i class="bi bi-person-plus me-2"></i>
+          S'inscrire
+        </button>
+      </form>
+      <div class="card-foot">
+        <p class="foot">
+          Vous avez déjà un compte ?
+          <a routerLink="/login">
+            Se connecter
+          </a>
+        </p>
       </div>
     </div>
-
-    <!-- App Info -->
-    <div class="text-center mt-4">
-      <p class="small text-muted mb-0">BookShare v1.0.0</p>
-      <p class="small text-muted">Achetez et vendez vos livres d'occasion</p>
-    </div>
   </div>
-</div>
+</section>
