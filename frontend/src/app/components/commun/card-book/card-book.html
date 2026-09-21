@@ -2,7 +2,7 @@
   <div class="position-relative">
     @if (listingCard().picture) {
       <img 
-      [src]="listingCard().picture.frontCover "
+      [src]="listingCard().picture?.frontCover "
       [alt]="listingCard().title" 
       class="card-img-top" 
       style="object-fit: cover;" />
